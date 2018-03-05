@@ -10,27 +10,27 @@ import lombok.Data;
 /**
  * @author ${author}
  * @date ${date}
- * @@description ${entityName} 数据库表对应的实体类
+ * @description ${entityName} 数据库表对应的实体类
 */
 @Data
 @SuppressWarnings("serial")
 public class ${entityName} extends BaseEntity implements Serializable {
     <#list customFields as customField>
     <#if !(customField.memberVariable ? starts_with("gmt"))>
-    /** ${customField.remarks!} */
+    /** ${customField.remarks} */
     <#if customField.typeName = 'BIT' >
     private Boolean ${customField.memberVariable};
     </#if>
-    <#if customField.typeName = 'INT' || customField.typeName = 'TINYINT' ||  customField.typeName = 'SMALLINT'>
+    <#if customField.typeName ?contains('INT') || customField.typeName ? contains('TINYINT') ||  customField.typeName ? contains('SMALLINT') >
     private Integer ${customField.memberVariable};
     </#if>
-    <#if customField.typeName = 'BIGINT' >
+    <#if customField.typeName ? contains('BIGINT') >
     private Long ${customField.memberVariable};
     </#if>
-    <#if customField.typeName = 'DOUBLE' >
+    <#if customField.typeName ? contains('DOUBLE') >
     private Double ${customField.memberVariable};
     </#if>
-    <#if customField.typeName = 'DECIMAL' >
+    <#if customField.typeName ? contains('DECIMAL') >
     private BigDecimal ${customField.memberVariable};
     </#if>
     <#if customField.typeName = 'CHAR' || customField.typeName = 'VARCHAR' || customField.typeName = 'TEXT' >

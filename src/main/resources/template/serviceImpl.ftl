@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Service("${entityName ? uncap_first}Service")
 public class ${entityName}ServiceImpl extends BaseServiceImpl<${entityName}> implements ${entityName}Service{
-    // 采用这种方式注入，为了设置父类中的dao
+    /** 采用这种方式注入，为了设置父类中的dao */
     private ${entityName}DAO ${entityName?uncap_first}DAO;
     @Autowired
     public void set${entityName}DAO(${entityName}DAO ${entityName?uncap_first}DAO) {

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <!--<Pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] %logger{56}.%method - %msg%n</Pattern> -->
+            <Pattern>%highlight([%-5level]) %logger{26}.%method - %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <!-- 文件日志 -->
+
+    <!-- DEBUG信息输出 -->
+    <appender name="DEBUG-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>../logs/debug.log</file>
+        <append>false</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- LevelFilter: 级别过滤器，根据日志级别进行过滤 -->
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/debug-%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- INFO信息输出 -->
+    <appender name="INFO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--文件在 tomcat 目录下logs-->
+        <file>../logs/info.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- LevelFilter: 级别过滤器，根据日志级别进行过滤 -->
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/logs/info-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- ERROR信息输出 -->
+    <appender name="ERROR-FILE" class="ch.qos.logback.core.FileAppender">
+        <file>../logs/error.log</file>
+        <!-- append: true,日志被追加到文件结尾; false,清空现存文件;默认是true -->
+        <append>true</append>
+        <encoder>
+            <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%5level] [%thread] %logger{0} %msg%n</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- LevelFilter: 级别过滤器，根据日志级别进行过滤 -->
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/error-%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- logger start -->
+
+    <!-- spring框架产生的warn级别日志 -->
+    <logger name="org.springframework" level="WARN" additivity="false"/>
+    <!--<logger name="com.apache.mybatis" level="DEBUG" /> 没有产生效果 -->
+    <logger name="java.sql.Connection" level="DEBUG"/>
+    <logger name="java.sql.Statement" level="DEBUG"/>
+    <logger name="java.sql.PreparedStatement" level="DEBUG"/>
+    <!-- 为某个包下的所有类的指定Appender. 也可以指定类名称 eg. com.aa.bb.ClassName -->
+    <logger name="com.ale">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.ale.controller" level="TRACE">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.ale.dao" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <!-- logger end -->
+
+    <!-- root将级别为“DEBUG”(默认)及大于“DEBUG”(DEBUG级别最低)的日志信息交给已经配置好的名为“Console”的appender处理， -->
+    <!-- “Console”appender将信息打印到Console -->
+    <!-- Strictly speaking, the level attribute is not necessary since -->
+    <!-- the level of the root level is set to DEBUG by default. -->
+    <root level="INFO">
+        <!-- 标识这个appender将会添加到这个logger -->
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="DEBUG-FILE"/>
+        <appender-ref ref="INFO-FILE"/>
+        <appender-ref ref="ERROR-FILE"/>
+    </root>
+</configuration>

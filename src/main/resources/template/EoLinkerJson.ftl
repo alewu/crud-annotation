@@ -5,7 +5,7 @@
 	<#list tableMetaDatas>
         <#items as tableMetaData> <#assign n = tableMetaData.customFields ? size />
 	"baseInfo": {
-		"apiName": "新增${tableMetaData.tableRemarks ? replace("表","")}",
+		"apiName": "新增${tableMetaData.tableRemarks ? replace("表"," ")} ",
 		"apiURI": "\/rent\/app\/${tableMetaData.entityName ? lower_case}s",
 		"apiProtocol": 0,
 		"apiSuccessMock": "",
@@ -25,7 +25,7 @@
 	<#items as customField ><#if !(customField.columnName ? starts_with("gmt") || customField_index == 0)>{
 		"paramNotNull": "1",
 		"paramType": "0",
-		"paramName": "${customField.remarks}",
+		"paramName": "${customField.remarks} ",
 		"paramKey": "${customField.memberVariable}",
 		"paramValue": "",
 		"paramLimit": "",
@@ -49,7 +49,7 @@
 	}
 },{
 	"baseInfo": {
-		"apiName": "更新${tableMetaData.tableRemarks ? replace("表","")}",
+		"apiName": "更新${tableMetaData.tableRemarks ? replace("表","")} ",
 		"apiURI": "\/rent\/app\/${tableMetaData.entityName ? lower_case}s",
 		"apiProtocol": 0,
 		"apiSuccessMock": "",
@@ -69,7 +69,7 @@
 	<#items as customField ><#if !(customField.columnName ? starts_with("gmt"))>{
 		"paramNotNull": "1",
 		"paramType": "0",
-		"paramName": "${customField.remarks}",
+		"paramName": "${customField.remarks} ",
 		"paramKey": "${customField.memberVariable}",
 		"paramValue": "",
 		"paramLimit": "",
@@ -93,7 +93,7 @@
 	}
 },{
 	"baseInfo": {
-		"apiName": "删除${tableMetaData.tableRemarks ? replace("表","")}",
+		"apiName": "删除${tableMetaData.tableRemarks ? replace("表"," ")} ",
 		"apiURI": "\/rent\/app\/${tableMetaData.entityName ? lower_case}s",
 		"apiProtocol": 0,
 		"apiSuccessMock": "",
@@ -112,7 +112,7 @@
 	"requestInfo": [<#if tableMetaData.customFields ??>{
 		"paramNotNull": "1",
 		"paramType": "0",
-		"paramName": "${tableMetaData.customFields[0].remarks}",
+		"paramName": "${tableMetaData.customFields[0].remarks} ",
 		"paramKey": "${tableMetaData.customFields[0].columnName}",
 		"paramValue": "",
 		"paramLimit": "",
@@ -136,7 +136,7 @@
 	}
 },{
 	"baseInfo": {
-		"apiName": "查询${tableMetaData.tableRemarks ? replace("表","")}",
+		"apiName": "查询${tableMetaData.tableRemarks ? replace("表"," ")} ",
 		"apiURI": "\/rent\/app\/${tableMetaData.entityName ? lower_case}s",
 		"apiProtocol": 0,
 		"apiSuccessMock": "",

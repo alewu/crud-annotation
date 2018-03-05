@@ -8,10 +8,10 @@ import java.util.Date;
 @Data
 public class BaseEntity {
 
-    /** 创建日期时间 **/
+    /** 创建日期时间 */
     @JsonIgnore
     private Date gmtCreate;
-    /** 更新日期时间 **/
+    /** 更新日期时间 */
     @JsonIgnore
     private Date gmtModified;
 }
