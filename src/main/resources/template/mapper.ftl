@@ -34,6 +34,7 @@
         INSERT INTO ${tableName}
         <trim prefix="(" suffix=")" suffixOverrides=",">
         <#items as customField>
+            <#if !customField.memberVariable ? contains("gmtModified") >
         <#if customField.typeName ='VARCHAR' >
             <if test="${customField.memberVariable} != null and ${customField.memberVariable} !=''">
                 ${customField.columnName},
@@ -43,12 +44,14 @@
                 ${customField.columnName},
             </if>
         </#if>
+            </#if>
         </#items>
         </trim>
     </#list>
     <#list customFields>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
         <#items as customField>
+             <#if !customField.memberVariable ? contains("gmtModified") >
         <#if (customField.typeName ='VARCHAR') >
             <if test="${customField.memberVariable} != null and ${customField.memberVariable} !=''">
                 ${r'#{'}${customField.memberVariable}${r'}'},
@@ -58,6 +61,7 @@
                 ${r'#{'}${customField.memberVariable}${r'}'},
             </if>
         </#if>
+             </#if>
         </#items>
         </trim>
     </#list>
@@ -73,6 +77,7 @@
         <set>
     <#items as customField>
         <#if customField ? index != 0>
+            <#if !customField.memberVariable ? contains("gmtCreate") >
         <#if (customField.typeName ='VARCHAR') >
             <if test="${customField.memberVariable} != null and ${customField.memberVariable} !=''">
                 ${customField.columnName} = ${r'#{'}${customField.memberVariable}${r'}'},
@@ -82,6 +87,7 @@
                 ${customField.columnName} = ${r'#{'}${customField.memberVariable}${r'}'},
             </if>
         </#if>
+            </#if>
         </#if>
     </#items>
         </set>
