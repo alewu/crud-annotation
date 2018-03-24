@@ -8,13 +8,14 @@ package com.ale.common.mvc;
  */
 public interface BaseDAO<T> {
 
-    int saveOne(T t);
+    void insert(T t);
 
-    int removeOne(String id);
+    void delete(T t);
 
-    int updateOne(T t);
+    void update(T t);
 
-    T getOne(Object obj);
+    T get(Object obj);
+
 
 
 

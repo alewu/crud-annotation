@@ -15,9 +15,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.Properties;
+
 /**
   * @author alewu
   * @date 2018/2/8
@@ -26,7 +29,6 @@ import java.io.IOException;
 @Configuration
 @PropertySource("classpath:jdbc.properties")
 @MapperScan("com.ale.dao")
-@ImportResource("classpath:transaction.xml")
 public class MybatisConfig {
 
     @Value("${jdbc.driverClassName}")
@@ -60,11 +62,30 @@ public class MybatisConfig {
      * @return 事务管理器
      */
     @Bean
-     public  DataSourceTransactionManager transactionManager() {
+     public  DataSourceTransactionManager dataSourceTransactionManager() {
          DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
          dataSourceTransactionManager.setDataSource(dataSource());
          return dataSourceTransactionManager;
      }
+
+    /**
+     * 配置事务拦截器
+     * @return 事务拦截器
+     */
+    @Bean
+    public TransactionInterceptor transactionInterceptor() {
+        TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
+        transactionInterceptor.setTransactionManager(dataSourceTransactionManager());
+        Properties transactionAttributes = new Properties();
+        transactionAttributes.setProperty("save*", "PROPAGATION_REQUIRED");
+        transactionAttributes.setProperty("remove*", "PROPAGATION_REQUIRED");
+        transactionAttributes.setProperty("update*", "PROPAGATION_REQUIRED");
+        transactionAttributes.setProperty("get*", "PROPAGATION_REQUIRED,readOnly");
+        transactionAttributes.setProperty("list*", "PROPAGATION_REQUIRED,readOnly");
+        transactionAttributes.setProperty("*", "PROPAGATION_REQUIRED");
+        transactionInterceptor.setTransactionAttributes(transactionAttributes);
+        return transactionInterceptor;
+    }
 
 
     @Bean

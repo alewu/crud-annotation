@@ -1,6 +1,8 @@
 package com.ale.config;
 
 
+import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +14,15 @@ import org.springframework.stereotype.Controller;
   * @description 根应用配置
   */
 @Configuration
-@EnableAspectJAutoProxy
 @ComponentScan(basePackages = {"com.ale.service"}, excludeFilters = @Filter(Controller.class))
 public class AppConfig {
+    @Bean
+    public BeanNameAutoProxyCreator proxyCreator(){
+        BeanNameAutoProxyCreator proxyCreator = new BeanNameAutoProxyCreator();
+        proxyCreator.setProxyTargetClass(true);
+        proxyCreator.setBeanNames("*ServiceImpl");
+        proxyCreator.setInterceptorNames("transactionInterceptor");
+        return proxyCreator;
+    }
 
 }

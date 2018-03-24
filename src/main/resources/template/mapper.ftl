@@ -30,7 +30,7 @@
     </#list>
 
     <#list customFields>
-    <insert id="saveOne" useGeneratedKeys="true" keyProperty="${customFields[0].memberVariable}" parameterType="${packageName}.entity.${entityName}">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="${customFields[0].memberVariable}" parameterType="${packageName}.entity.${entityName}">
         INSERT INTO ${tableName}
         <trim prefix="(" suffix=")" suffixOverrides=",">
         <#items as customField>
@@ -66,13 +66,13 @@
         </trim>
     </#list>
     </insert>
-    <delete id="removeOne" parameterType="java.lang.Integer">
+    <delete id="delete" parameterType="java.lang.Integer">
         DELETE FROM ${tableName}
         WHERE ${customFields[0].columnName} = ${r'#{'}${customFields[0].memberVariable}${r'}'}
     </delete>
 <#if !(customFields[3].columnName == "gmt_create" && customFields[2].columnName ? ends_with("_id")) >
 <#list customFields>
-    <update id="updateOne" parameterType="${packageName}.entity.${entityName}">
+    <update id="update" parameterType="${packageName}.entity.${entityName}">
         UPDATE ${tableName}
         <set>
     <#items as customField>
@@ -94,7 +94,7 @@
         WHERE ${customFields[0].columnName} = ${r'#{'}${customFields[0].memberVariable}${r'}'}
     </update>
 </#list>
-    <select id="getOne" resultMap="BaseResultMap">
+    <select id="get" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"/>
         FROM ${tableName}
         WHERE ${customFields[0].columnName} = ${r'#{'}${customFields[0].memberVariable}${r'}'}
