@@ -7,7 +7,6 @@ import com.ale.util.freemarker.bean.TableMetaData;
 import com.ale.util.freemarker.util.FreeMarkerTemplateUtils;
 import com.ale.util.freemarker.util.TableUtils;
 import freemarker.template.Template;
-import jodd.util.StringUtil;
 
 
 import java.io.IOException;
@@ -22,22 +21,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+  * @author alewu
+  * @date 2018/4/14
+  * @description mvc 模板文件生成
+  */
 public class FreeMarkerMvc {
     private static final String AUTHOR = "alewu";
     private static final String PACKAGE_NAME = getBasePackagePath(FreeMarkerMvc.class);
     private static final String FILE_PATH = getAbsolutePackagePath(FreeMarkerMvc.class);
 
     private static final String CONSTANTS = MvcEnum.CONSTANTS.getName();
-    /**
-     * 模板名称
-     */
-    private static final String ENTITY = MvcEnum.ENTITY.getName();
-    private static final String CONTROLLER = MvcEnum.CONTROLLER.getName();
-    private static final String SERVICE = MvcEnum.SERVICE.getName();
-    private static final String SERVICE_IMPL = "serviceImpl";
-    private static final String DAO = MvcEnum.DAO.getName();
-    private static final String MAPPER = MvcEnum.MAPPER.getName();
+
     /**
      * 文件后缀
      */
@@ -65,7 +60,7 @@ public class FreeMarkerMvc {
     }
 
     private void init() throws IOException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         currentDate = sdf.format(new Date());
         // 获取结果集
         resultSet = TableUtils.getResultSet();
@@ -87,7 +82,7 @@ public class FreeMarkerMvc {
 
     public static String getBasePackagePath(Class clazz) {
         String pathStr = getAbsolutePackagePath(clazz);
-        String[] subPaths = pathStr.split("/src/main/java/");
+        String[] subPaths = pathStr.split("src/main/java");
         String subPath = subPaths[1];
         return subPath.replace("/", ".").substring(0, subPath.length() - 1);
     }
@@ -99,17 +94,17 @@ public class FreeMarkerMvc {
             tableMetaDatas = TableUtils.getTableMetaData();
             for (TableMetaData tableMetaData : tableMetaDatas) {
                 // 生成Model文件
-                generateJavaFile("entity", "entity", tableMetaData, ".java");
+                generateTemplateFile("entity",  tableMetaData,"entity", ".java");
                 // 生成Mapper文件
-                generateJavaFile("mapper", "mapper", tableMetaData, "Mapper.xml");
+                generateTemplateFile("mapper",tableMetaData, "mapper",  "Mapper.xml");
                 // 生成服务层接口文件
-                generateJavaFile("service", "service", tableMetaData, "Service.java");
+                generateTemplateFile("service", tableMetaData, "service", "Service.java");
                 // 生成服务实现层文件
-                generateJavaFile("service/impl", "serviceImpl", tableMetaData, "ServiceImpl.java");
+                generateTemplateFile("serviceImpl", tableMetaData, "service/impl", "ServiceImpl.java");
                 // 生成Dao文件
-                generateJavaFile("dao", "dao", tableMetaData, "DAO.java");
+                generateTemplateFile("dao", tableMetaData,"dao",  "DAO.java");
                 // 生成controller文件
-                generateJavaFile("controller", "controller", tableMetaData, "Controller.java");
+                generateTemplateFile("controller", tableMetaData,"controller",  "Controller.java");
             }
             generateRestURIConstantsFile(tableMetaDatas);
 
@@ -122,7 +117,8 @@ public class FreeMarkerMvc {
         }
     }
 
-    private void generateJavaFile(String packageName, String templateName, TableMetaData tmd, String suffix) throws Exception {
+    private void generateTemplateFile(String templateName, TableMetaData tmd, String packageName, String suffix)
+            throws Exception {
         // 路径，包名，文件名
         Path path = Paths.get(FILE_PATH, packageName, tmd.getEntityName() + suffix);
         Map<String, Object> dataMap = new HashMap<>(2);
