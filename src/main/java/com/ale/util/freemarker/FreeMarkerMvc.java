@@ -7,6 +7,7 @@ import com.ale.util.freemarker.bean.TableMetaData;
 import com.ale.util.freemarker.util.FreeMarkerTemplateUtils;
 import com.ale.util.freemarker.util.TableUtils;
 import freemarker.template.Template;
+import jodd.util.StringUtil;
 
 
 import java.io.IOException;
@@ -28,20 +29,28 @@ public class FreeMarkerMvc {
     private static final String FILE_PATH = getAbsolutePackagePath(FreeMarkerMvc.class);
 
     private static final String CONSTANTS = MvcEnum.CONSTANTS.getName();
-    /** 模板名称 */
+    /**
+     * 模板名称
+     */
     private static final String ENTITY = MvcEnum.ENTITY.getName();
     private static final String CONTROLLER = MvcEnum.CONTROLLER.getName();
     private static final String SERVICE = MvcEnum.SERVICE.getName();
-    private static final String SERVICE_IMPL = MvcEnum.SERVICE_IMPL.getName();
+    private static final String SERVICE_IMPL = "serviceImpl";
     private static final String DAO = MvcEnum.DAO.getName();
     private static final String MAPPER = MvcEnum.MAPPER.getName();
-    /** 文件后缀 */
+    /**
+     * 文件后缀
+     */
     private static final String JAVA_SUFFIX = SuffixConstants.JAVA;
     private static final String TEMPLATE_SUFFIX = SuffixConstants.FREEMARKER;
-    private static final String MAPPER_SUFFIX = SuffixConstants.XML;
-    /** Controller层类级别匹配 */
+
+    /**
+     * Controller层类级别匹配
+     */
     private static final String APP_PREFIX = "/api/v1";
-    /** 结果集 */
+    /**
+     * 结果集
+     */
     private ResultSet resultSet;
 
     private static String currentDate;
@@ -83,7 +92,6 @@ public class FreeMarkerMvc {
         return subPath.replace("/", ".").substring(0, subPath.length() - 1);
     }
 
-
     public void generate() throws Exception {
         init();
         List<TableMetaData> tableMetaDatas;
@@ -91,23 +99,19 @@ public class FreeMarkerMvc {
             tableMetaDatas = TableUtils.getTableMetaData();
             for (TableMetaData tableMetaData : tableMetaDatas) {
                 // 生成Model文件
-                generateEntityFile(tableMetaData);
+                generateJavaFile("entity", "entity", tableMetaData, ".java");
                 // 生成Mapper文件
-                generateMapperFile(tableMetaData);
+                generateJavaFile("mapper", "mapper", tableMetaData, "Mapper.xml");
                 // 生成服务层接口文件
-                generateServiceFile(tableMetaData);
+                generateJavaFile("service", "service", tableMetaData, "Service.java");
                 // 生成服务实现层文件
-                generateServiceImplFile(tableMetaData);
-                // 生成Dao文  件
-                generateDaoFile(tableMetaData);
+                generateJavaFile("service/impl", "serviceImpl", tableMetaData, "ServiceImpl.java");
+                // 生成Dao文件
+                generateJavaFile("dao", "dao", tableMetaData, "DAO.java");
                 // 生成controller文件
-                generateControllerFile(tableMetaData);
+                generateJavaFile("controller", "controller", tableMetaData, "Controller.java");
             }
             generateRestURIConstantsFile(tableMetaDatas);
-            generateBaseEntityFile();
-            generateBaseServiceImplFile();
-            generateBaseServiceFile();
-            generateBaseDAOFile();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -118,105 +122,33 @@ public class FreeMarkerMvc {
         }
     }
 
-
-    private void generateEntityFile(TableMetaData tableMetaData) throws Exception {
+    private void generateJavaFile(String packageName, String templateName, TableMetaData tmd, String suffix) throws Exception {
         // 路径，包名，文件名
-        Path path = Paths.get(FILE_PATH, ENTITY,
-                tableMetaData.getEntityName() + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("tableMetaData", tableMetaData);
-        generateFileByTemplate(ENTITY, path, dataMap);
-    }
-
-    private void generateControllerFile(TableMetaData tableMetaData) throws Exception {
-        Path path = Paths.get(FILE_PATH, CONTROLLER,
-                tableMetaData.getEntityName() + MvcEnum.CONTROLLER.toUpperFirstChar() + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("tableMetaData", tableMetaData);
-        generateFileByTemplate(CONTROLLER, path, dataMap);
-    }
-
-    private void generateServiceImplFile(TableMetaData tableMetaData) throws Exception {
-        Path path = Paths.get(FILE_PATH, "service", "impl",
-                tableMetaData.getEntityName() + "ServiceImpl" + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("entityName", tableMetaData.getEntityName());
-        generateFileByTemplate("serviceImpl", path, dataMap);
-    }
-
-    private void generateDaoFile(TableMetaData tableMetaData) throws Exception {
-        Path path = Paths.get(FILE_PATH, DAO,
-                tableMetaData.getEntityName() + DAO.toUpperCase() + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("entityName", tableMetaData.getEntityName());
-        generateFileByTemplate(DAO, path, dataMap);
-
-    }
-
-    private void generateServiceFile(TableMetaData tableMetaData) throws Exception {
-        Path path = Paths.get(FILE_PATH, SERVICE.toLowerCase(),
-                tableMetaData.getEntityName() + MvcEnum.SERVICE.toUpperFirstChar() + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("entityName", tableMetaData.getEntityName());
-        generateFileByTemplate(SERVICE, path, dataMap);
-
-    }
-
-    private void generateMapperFile(TableMetaData tableMetaData) throws Exception {
-        Path path = Paths.get(FILE_PATH, MAPPER,
-                tableMetaData.getEntityName() + MvcEnum.MAPPER.toUpperFirstChar() + MAPPER_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("tableMetaData", tableMetaData);
-        generateFileByTemplate(MAPPER, path, dataMap);
-
-    }
-
-
-    private void generateBaseEntityFile() throws Exception {
-        final String templateName = "BaseEntity";
-        Path path = Paths.get(FILE_PATH, ENTITY, templateName + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
+        Path path = Paths.get(FILE_PATH, packageName, tmd.getEntityName() + suffix);
+        Map<String, Object> dataMap = new HashMap<>(2);
+        dataMap.put("entityName", tmd.getEntityName());
+        dataMap.put("tableMetaData", tmd);
         generateFileByTemplate(templateName, path, dataMap);
     }
 
-    private void generateBaseServiceFile() throws Exception {
-        final String templateName = "BaseService";
-        Path path = Paths.get(FILE_PATH, SERVICE, templateName + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
-        generateFileByTemplate(templateName, path, dataMap);
-    }
-
-    private void generateBaseServiceImplFile() throws Exception {
-        final String templateName = "BaseServiceImpl";
-        Path path = Paths.get(FILE_PATH, "service/impl", templateName + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
-        generateFileByTemplate(templateName, path, dataMap);
-    }
-
-    private void generateBaseDAOFile() throws Exception {
-        final String templateName = "BaseDAO";
-        Path path = Paths.get(FILE_PATH, DAO, templateName + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
-        generateFileByTemplate(templateName, path, dataMap);
-    }
 
     private void generateRestURIConstantsFile(List<TableMetaData> tableMetaDatas) throws Exception {
         final String templateName = "RestURIConstants";
         Path path = Paths.get(FILE_PATH, CONSTANTS, templateName + JAVA_SUFFIX);
-        Map<String, Object> dataMap = new HashMap<>();
+        Map<String, Object> dataMap = new HashMap<>(2);
         dataMap.put("appPrefix", APP_PREFIX);
         dataMap.put("tableMetaDatas", tableMetaDatas);
         generateFileByTemplate(templateName, path, dataMap);
     }
 
-    private void generateFileByTemplate(final String templateName, Path path, Map<String, Object> dataMap) throws Exception {
+    private void generateFileByTemplate(final String templateName, Path path, Map<String, Object> dataMap) throws
+            Exception {
         Template template = FreeMarkerTemplateUtils.getTemplate(templateName + TEMPLATE_SUFFIX);
         dataMap.put("packageName", PACKAGE_NAME);
         dataMap.put("author", AUTHOR);
         dataMap.put("date", currentDate);
         Writer out = Files.newBufferedWriter(path, StandardCharsets.UTF_8);
         template.process(dataMap, out);
-
     }
 
 
