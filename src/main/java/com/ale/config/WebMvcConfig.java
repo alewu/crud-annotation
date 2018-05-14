@@ -3,8 +3,7 @@ package com.ale.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,18 +18,20 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+
 /**
-  * @author alewu
-  * @date 2018/2/8
-  * @description mvc 配置
-  */
+ * @author alewu
+ * @date 2018/2/8
+ * @description mvc 配置
+ */
 @Configuration
 @ComponentScan(basePackages = {"com.ale.controller", "com.ale.common"})
+@Slf4j
 public class WebMvcConfig extends WebMvcConfigurationSupport {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebMvcConfig.class);
+
 
     /**
      * 定制视图解析器
@@ -47,6 +48,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
     /**
      * 解析multipart请求
+     *
      * @return MultipartResolver
      */
     @Bean
@@ -61,7 +63,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations( "/static/");
+        registry.addResourceHandler("/static/**").addResourceLocations("/static/");
     }
 
     /**
@@ -82,7 +84,8 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
      */
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
-        LOGGER.debug("Initializing Method Validation Post Processor Bean");
+        log.debug("Initializing Method Validation Post Processor Bean");
+        // 默认是普通模式，会返回所有的验证不通过信息集合
         return new MethodValidationPostProcessor();
     }
 
@@ -93,7 +96,6 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         mediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
         jsonConverter.setSupportedMediaTypes(mediaTypes);
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         jsonConverter.setObjectMapper(objectMapper);

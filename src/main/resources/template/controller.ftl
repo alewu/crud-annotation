@@ -33,7 +33,7 @@ public class ${entityName}Controller {
      */
     @PostMapping(${entityName?upper_case}S)
     public Response save${entityName}(@Validated ${entityName} ${entityName?uncap_first}) {
-        ${entityName?uncap_first}Service.saveOne(${entityName?uncap_first});
+        ${entityName?uncap_first}Service.insert(${entityName?uncap_first});
         return Response.ok().put("${entityName?uncap_first}Id", ${entityName?uncap_first}.get${entityName}Id());
     }
     <#if !( customFields[2].columnName ? ends_with("_id") && customFields[3].columnName == "gmt_create" ) >
@@ -45,7 +45,7 @@ public class ${entityName}Controller {
      */
     @GetMapping(${entityName?upper_case}S + ${entityName?upper_case}_ID)
     public Response get${entityName}(@PathVariable String ${entityName?uncap_first}Id) {
-        ${entityName} ${entityName?uncap_first} = ${entityName?uncap_first}Service.getOne(${entityName?uncap_first}Id);
+        ${entityName} ${entityName?uncap_first} = ${entityName?uncap_first}Service.get(${entityName?uncap_first}Id);
         return Response.ok().put("${entityName?uncap_first}", ${entityName?uncap_first});
     }
 
@@ -67,7 +67,7 @@ public class ${entityName}Controller {
     */
     @PutMapping(${entityName?upper_case}S)
     public Response update${entityName}(@Validated ${entityName} ${entityName?uncap_first}) {
-        ${entityName?uncap_first}Service.updateOne(${entityName?uncap_first});
+        ${entityName?uncap_first}Service.update(${entityName?uncap_first});
         return Response.ok();
     }
 
@@ -78,7 +78,7 @@ public class ${entityName}Controller {
      */
     @DeleteMapping(${entityName?upper_case}S + ${entityName?upper_case}_ID)
     public Response remove${entityName}(@PathVariable String ${entityName?uncap_first}Id) {
-        ${entityName?uncap_first}Service.removeOne(${entityName?uncap_first}Id);
+        ${entityName?uncap_first}Service.delete(${entityName?uncap_first}Id);
         return Response.ok();
     }
     </#if>

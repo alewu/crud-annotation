@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
+    <!-- 定义日志文件 输入位置 （"../"表示在tomcat目录下logs）-->
+    <property name="log_path" value="../logs/crud"/>
+    <!-- 日志最大的历史 30天 -->
+    <property name="maxHistory" value="30"/>
 
     <!-- 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
             <!--<Pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] %logger{56}.%method - %msg%n</Pattern> -->
-            <Pattern>%highlight([%-5level]) %logger{26}.%method - %msg%n</Pattern>
+            <Pattern>[%date{HH:mm:ss.SSS}] %highlight([%.-1level]) %cyan(%logger{5}.%method) - %message%n</Pattern>
+            <charset>UTF-8</charset>
         </encoder>
     </appender>
 
@@ -14,11 +19,13 @@
 
     <!-- DEBUG信息输出 -->
     <appender name="DEBUG-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>../logs/debug.log</file>
+        <!-- 被写入的文件名，可以是相对目录，也可以是绝对目录，如果上级目录不存在会自动创建，没有默认值。-->
+        <file>${log_path}/debug.log</file>
+        <!-- 如果是 true，日志被追加到文件结尾，如果是 false，清空现存文件，默认是true。 -->
         <append>false</append>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n
-            </pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <!-- LevelFilter: 级别过滤器，根据日志级别进行过滤 -->
@@ -26,20 +33,20 @@
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
+        <!-- 当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名。 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/debug-%d{yyyy-MM-dd}.log
-            </fileNamePattern>
-            <maxHistory>30</maxHistory>
+            <fileNamePattern>${log_path}/debug-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <!-- INFO信息输出 -->
     <appender name="INFO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <!--文件在 tomcat 目录下logs-->
-        <file>../logs/info.log</file>
+        <file>${log_path}/info.log</file>
         <append>true</append>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <!-- LevelFilter: 级别过滤器，根据日志级别进行过滤 -->
@@ -48,18 +55,18 @@
             <onMismatch>DENY</onMismatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/logs/info-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
+            <fileNamePattern>${log_path}/info-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
     <!-- ERROR信息输出 -->
     <appender name="ERROR-FILE" class="ch.qos.logback.core.FileAppender">
-        <file>../logs/error.log</file>
+        <file>${log_path}/error.log</file>
         <!-- append: true,日志被追加到文件结尾; false,清空现存文件;默认是true -->
         <append>true</append>
         <encoder>
-            <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%5level] [%thread] %logger{0} %msg%n</Pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -69,9 +76,8 @@
             <onMismatch>DENY</onMismatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/error-%d{yyyy-MM-dd}.log
-            </fileNamePattern>
-            <maxHistory>30</maxHistory>
+            <fileNamePattern>${log_path}/error-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
         </rollingPolicy>
     </appender>
 
@@ -79,18 +85,14 @@
 
     <!-- spring框架产生的warn级别日志 -->
     <logger name="org.springframework" level="WARN" additivity="false"/>
-    <!--<logger name="com.apache.mybatis" level="DEBUG" /> 没有产生效果 -->
-    <logger name="java.sql.Connection" level="DEBUG"/>
-    <logger name="java.sql.Statement" level="DEBUG"/>
-    <logger name="java.sql.PreparedStatement" level="DEBUG"/>
     <!-- 为某个包下的所有类的指定Appender. 也可以指定类名称 eg. com.aa.bb.ClassName -->
-    <logger name="com.ale">
+    <logger name="com.sinsinet.controller" level="DEBUG" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
-    <logger name="com.ale.controller" level="TRACE">
-        <appender-ref ref="STDOUT"/>
+    <logger name="com.sinsinet.service" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="com.ale.dao" level="DEBUG" additivity="false">
+    <logger name="com.sinsinet.dao" level="DEBUG" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
 

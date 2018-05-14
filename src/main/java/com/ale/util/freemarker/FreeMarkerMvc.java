@@ -7,6 +7,8 @@ import com.ale.util.freemarker.bean.TableMetaData;
 import com.ale.util.freemarker.util.FreeMarkerTemplateUtils;
 import com.ale.util.freemarker.util.TableUtils;
 import freemarker.template.Template;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 
 
 import java.io.IOException;
@@ -21,14 +23,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
-  * @author alewu
-  * @date 2018/4/14
-  * @description mvc 模板文件生成
-  */
+ * @author alewu
+ * @date 2018/4/14
+ * @description mvc 模板文件生成
+ */
+@Slf4j
 public class FreeMarkerMvc {
     private static final String AUTHOR = "alewu";
-    private static final String PACKAGE_NAME = getBasePackagePath(FreeMarkerMvc.class);
+    private static final String PACKAGE_NAME = getPackageName(FreeMarkerMvc.class);
     private static final String FILE_PATH = getAbsolutePackagePath(FreeMarkerMvc.class);
 
     private static final String CONSTANTS = MvcEnum.CONSTANTS.getName();
@@ -57,6 +61,7 @@ public class FreeMarkerMvc {
         freeMarkerMvc.generate();
         Long end = System.currentTimeMillis();
         System.out.println("finished!!!" + "\n\rtime >>> " + (end - start) + " ms");
+
     }
 
     private void init() throws IOException {
@@ -71,42 +76,45 @@ public class FreeMarkerMvc {
         }
     }
 
-
     public static String getAbsolutePackagePath(Class clazz) {
-        String pathStr = clazz.getResource("").getPath()
-                              .replaceFirst("/", "")
-                              .replace("target/classes", "src/main/java")
-                              .replace("/util/freemarker", "");
-        return pathStr;
+        // 获取当前类的加载目录
+        String classPath = clazz.getResource("").getPath();
+        return classPath.replaceFirst("/", "")
+                        .replace("target/classes", "src/main/java")
+                        .replace("/util/freemarker", "");
     }
 
-    public static String getBasePackagePath(Class clazz) {
-        String pathStr = getAbsolutePackagePath(clazz);
-        String[] subPaths = pathStr.split("src/main/java");
-        String subPath = subPaths[1];
-        return subPath.replace("/", ".").substring(0, subPath.length() - 1);
+    public static String getPackageName(Class clazz) {
+        String classPath = getAbsolutePackagePath(clazz);
+        log.info("classPath[{}]", classPath);
+        String[] subPaths = classPath.split("/");
+        return subPaths[subPaths.length - 2].concat(".").concat(subPaths[subPaths.length - 1]);
     }
 
-    public void generate() throws Exception {
+    private void generate() throws Exception {
         init();
         List<TableMetaData> tableMetaDatas;
         try {
             tableMetaDatas = TableUtils.getTableMetaData();
             for (TableMetaData tableMetaData : tableMetaDatas) {
                 // 生成Model文件
-                generateTemplateFile("entity",  tableMetaData,"entity", ".java");
+                generateTemplateFile("entity", tableMetaData, "entity", ".java");
                 // 生成Mapper文件
-                generateTemplateFile("mapper",tableMetaData, "mapper",  "Mapper.xml");
+                generateTemplateFile("mapper", tableMetaData, "mapper", "Mapper.xml");
                 // 生成服务层接口文件
                 generateTemplateFile("service", tableMetaData, "service", "Service.java");
                 // 生成服务实现层文件
                 generateTemplateFile("serviceImpl", tableMetaData, "service/impl", "ServiceImpl.java");
                 // 生成Dao文件
-                generateTemplateFile("dao", tableMetaData,"dao",  "DAO.java");
+                generateTemplateFile("dao", tableMetaData, "dao", "DAO.java");
                 // 生成controller文件
-                generateTemplateFile("controller", tableMetaData,"controller",  "Controller.java");
+                generateTemplateFile("controller", tableMetaData, "controller", "Controller.java");
             }
             generateRestURIConstantsFile(tableMetaDatas);
+            generateBaseTemplateFile("BaseEntity",  "entity");
+            generateBaseTemplateFile("BaseService",  "service");
+            generateBaseTemplateFile("BaseServiceImpl",  "service/impl");
+            generateBaseTemplateFile("BaseDAO", "dao");
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -124,6 +132,12 @@ public class FreeMarkerMvc {
         Map<String, Object> dataMap = new HashMap<>(2);
         dataMap.put("entityName", tmd.getEntityName());
         dataMap.put("tableMetaData", tmd);
+        generateFileByTemplate(templateName, path, dataMap);
+    }
+    private void generateBaseTemplateFile(String templateName,  String packageName) throws Exception {
+        // 路径，包名，文件名
+        Path path = Paths.get(FILE_PATH, packageName, templateName.concat(".java"));
+        Map<String, Object> dataMap = new HashMap<>(2);
         generateFileByTemplate(templateName, path, dataMap);
     }
 

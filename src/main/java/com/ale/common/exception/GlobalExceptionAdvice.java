@@ -1,6 +1,7 @@
 package com.ale.common.exception;
 
 import com.ale.common.exception.custom.UnauthorizedException;
+import com.ale.common.response.ApiResponse;
 import com.ale.common.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class GlobalExceptionAdvice extends GlobalExceptionHandler {
     @Override
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public Response handleConstraintViolationException(ConstraintViolationException e) {
+    public ApiResponse handleConstraintViolationException(ConstraintViolationException e) {
         return super.handleConstraintViolationException(e);
     }
 
@@ -46,7 +47,7 @@ public class GlobalExceptionAdvice extends GlobalExceptionHandler {
     @Override
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(BindException.class)
-    public Response handleBindException(BindException e) {
+    public ApiResponse handleBindException(BindException e) {
         return super.handleBindException(e);
     }
 

@@ -7,13 +7,14 @@ import java.io.Serializable;
 import java.util.Date;
 import java.math.BigDecimal;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 /**
  * @author ${author}
  * @date ${date}
  * @description ${entityName} 数据库表对应的实体类
 */
 @Data
-@SuppressWarnings("serial")
+@EqualsAndHashCode(callSuper = true)
 public class ${entityName} extends BaseEntity implements Serializable {
     <#list customFields as customField>
     <#if !(customField.memberVariable ? starts_with("gmt"))>
@@ -21,10 +22,10 @@ public class ${entityName} extends BaseEntity implements Serializable {
     <#if customField.typeName = 'BIT' >
     private Boolean ${customField.memberVariable};
     </#if>
-    <#if customField.typeName ?contains('INT') || customField.typeName ? contains('TINYINT') ||  customField.typeName ? contains('SMALLINT') >
+    <#if customField.typeName ? starts_with('INT') || customField.typeName ? starts_with('TINYINT') ||  customField.typeName ? starts_with('SMALLINT') >
     private Integer ${customField.memberVariable};
     </#if>
-    <#if customField.typeName ? contains('BIGINT') >
+    <#if customField.typeName ? starts_with('BIGINT') >
     private Long ${customField.memberVariable};
     </#if>
     <#if customField.typeName ? contains('DOUBLE') >

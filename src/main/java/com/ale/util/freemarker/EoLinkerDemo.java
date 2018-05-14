@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class EoLinkerDemo {
-    private static final String PACKAGE_NAME = FreeMarkerMvc.getBasePackagePath(EoLinkerDemo.class);
+    private static final String PACKAGE_NAME = FreeMarkerMvc.getPackageName(EoLinkerDemo.class);
     private static final String FILE_PATH = FreeMarkerMvc.getAbsolutePackagePath(EoLinkerDemo.class);
     private static final String TEMPLATE_SUFFIX = SuffixConstants.FREEMARKER;
     private static final String CONSTANTS = MvcEnum.CONSTANTS.getName();

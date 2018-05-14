@@ -11,7 +11,7 @@ public class RestURIConstants {
     <#list tableMetaDatas>
     <#items as tableMetaData>
     public static final String ${tableMetaData.entityName ? upper_case}S = "/${tableMetaData.entityName ? uncap_first}s";
-    public static final String ${tableMetaData.entityName ? upper_case}_ID = "/{${tableMetaData.entityName ? uncap_first}Id}";
+    public static final String ${tableMetaData.entityName ? upper_case}_ID = "/{${tableMetaData.entityName ? uncap_first}Id:\\d+}";
     </#items>
     </#list>
 

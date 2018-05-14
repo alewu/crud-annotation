@@ -1,6 +1,7 @@
 package com.ale.common.exception;
 
 import com.ale.common.exception.custom.UnauthorizedException;
+import com.ale.common.response.ApiResponse;
 import com.ale.common.response.Response;
 import com.ale.common.response.ResponseCode;
 import org.slf4j.Logger;
@@ -34,11 +35,12 @@ public class GlobalExceptionHandler {
     /**
      * spring参数校验
      */
-    public Response handleConstraintViolationException(ConstraintViolationException e) {
+    public ApiResponse handleConstraintViolationException(ConstraintViolationException e) {
         LOGGER.error("参数验证不通过", e);
         Map<String, Object> details = new HashMap<>();
         e.getConstraintViolations().forEach(c -> details.put(c.getPropertyPath().toString(), c.getMessage()));
-        return Response.create(BAD_REQUEST.value(), "参数验证不通过").put("details", details);
+        return ApiResponse.builder().data(details).code(BAD_REQUEST.value()).build();
+//        return Response.create(BAD_REQUEST.value(), "参数验证不通过").put("details", details);
     }
 
     /**
@@ -59,13 +61,14 @@ public class GlobalExceptionHandler {
      * 400 - Bad Request(处理Content-Type
      * "application/x-www-form-urlencoded"提交的内容)
      */
-    public Response handleBindException(BindException e) {
+    public ApiResponse handleBindException(BindException e) {
         LOGGER.error("数据绑定异常", e);
         BindingResult result = e.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
         Map<String, Object> details = new HashMap<>();
         fieldErrors.forEach(fieldError -> details.put(fieldError.getField(), fieldError.getDefaultMessage()));
-        return Response.create(BAD_REQUEST.value(), "数据绑定异常").put("details", details);
+        return ApiResponse.builder().message(details).code(BAD_REQUEST.value()).build();
+       // return Response.create(BAD_REQUEST.value(), "数据绑定异常").put("details", details);
     }
 
     public Response handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {

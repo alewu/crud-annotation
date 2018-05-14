@@ -34,8 +34,8 @@
         INSERT INTO ${tableName}
         <trim prefix="(" suffix=")" suffixOverrides=",">
         <#items as customField>
-            <#if !customField.memberVariable ? contains("gmtModified") >
-        <#if customField.typeName ='VARCHAR' >
+            <#if !customField.memberVariable ? contains("gmtCreate") && !customField.memberVariable ? contains("gmtModified")>
+        <#if customField.typeName ='VARCHAR' || customField.typeName ='CHAR'>
             <if test="${customField.memberVariable} != null and ${customField.memberVariable} !=''">
                 ${customField.columnName},
             </if>
@@ -46,12 +46,13 @@
         </#if>
             </#if>
         </#items>
+           gmt_create, gmt_modified
         </trim>
     </#list>
     <#list customFields>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
         <#items as customField>
-             <#if !customField.memberVariable ? contains("gmtModified") >
+             <#if !customField.memberVariable ? contains("gmtCreate") && !customField.memberVariable ? contains("gmtModified")>
         <#if (customField.typeName ='VARCHAR') >
             <if test="${customField.memberVariable} != null and ${customField.memberVariable} !=''">
                 ${r'#{'}${customField.memberVariable}${r'}'},
@@ -63,6 +64,7 @@
         </#if>
              </#if>
         </#items>
+            NOW(), NOW()
         </trim>
     </#list>
     </insert>
@@ -77,7 +79,7 @@
         <set>
     <#items as customField>
         <#if customField ? index != 0>
-            <#if !customField.memberVariable ? contains("gmtCreate") >
+            <#if !customField.memberVariable ? contains("gmtCreate") && !customField.memberVariable ? contains("gmtModified")>
         <#if (customField.typeName ='VARCHAR') >
             <if test="${customField.memberVariable} != null and ${customField.memberVariable} !=''">
                 ${customField.columnName} = ${r'#{'}${customField.memberVariable}${r'}'},
@@ -90,6 +92,7 @@
             </#if>
         </#if>
     </#items>
+            gmt_modified = NOW()
         </set>
         WHERE ${customFields[0].columnName} = ${r'#{'}${customFields[0].memberVariable}${r'}'}
     </update>
