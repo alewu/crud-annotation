@@ -32,7 +32,6 @@ import java.util.List;
 @Slf4j
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
-
     /**
      * 定制视图解析器
      *

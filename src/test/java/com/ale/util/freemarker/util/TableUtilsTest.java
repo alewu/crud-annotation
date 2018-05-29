@@ -1,6 +1,7 @@
 package com.ale.util.freemarker.util; 
 
-import com.ale.util.freemarker.bean.TableMetaData;
+import com.ale.common.util.mine.TableUtils;
+import com.ale.common.util.freemarker.TableMetaData;
 import org.junit.Test;
 import org.junit.Before; 
 import org.junit.After;
