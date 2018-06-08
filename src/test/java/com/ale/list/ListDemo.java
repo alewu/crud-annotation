@@ -17,6 +17,6 @@ public class ListDemo {
         students.add(new Student(1,"Ben", 54, 89));
         students.add(new Student(1,"Jane", 7, 90));
 
-        Collections.sort(students);
+        System.out.println(students);
     }
 }
