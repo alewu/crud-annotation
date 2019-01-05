@@ -1,15 +1,10 @@
-package com.ale.config;
+package com.ale.config.ssm;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.ExecutorType;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.aop.ClassFilter;
-import org.springframework.aop.MethodMatcher;
-import org.springframework.aop.Pointcut;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
-import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,26 +15,20 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
-import org.springframework.transaction.interceptor.TransactionProxyFactoryBean;
 
 import javax.sql.DataSource;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
+/**
+  * @author alewu
+  * @date 2018/2/8
+  * @description Mybatis 配置
+  */
 @Configuration
 @PropertySource("classpath:jdbc.properties")
 @MapperScan("com.ale.dao")
-@ImportResource("classpath:transaction.xml")
 public class MybatisConfig {
 
     @Value("${jdbc.driverClassName}")
@@ -73,11 +62,30 @@ public class MybatisConfig {
      * @return 事务管理器
      */
     @Bean
-     public  DataSourceTransactionManager transactionManager() {
+     public  DataSourceTransactionManager dataSourceTransactionManager() {
          DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
          dataSourceTransactionManager.setDataSource(dataSource());
          return dataSourceTransactionManager;
      }
+
+    /**
+     * 配置事务拦截器
+     * @return 事务拦截器
+     */
+    @Bean
+    public TransactionInterceptor transactionInterceptor() {
+        TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
+        transactionInterceptor.setTransactionManager(dataSourceTransactionManager());
+        Properties transactionAttributes = new Properties();
+        transactionAttributes.setProperty("save*", "PROPAGATION_REQUIRED");
+        transactionAttributes.setProperty("remove*", "PROPAGATION_REQUIRED");
+        transactionAttributes.setProperty("update*", "PROPAGATION_REQUIRED");
+        transactionAttributes.setProperty("get*", "PROPAGATION_REQUIRED,readOnly");
+        transactionAttributes.setProperty("list*", "PROPAGATION_REQUIRED,readOnly");
+        transactionAttributes.setProperty("*", "PROPAGATION_REQUIRED");
+        transactionInterceptor.setTransactionAttributes(transactionAttributes);
+        return transactionInterceptor;
+    }
 
 
     @Bean
@@ -93,7 +101,7 @@ public class MybatisConfig {
     /**
      * 一个可以执行批量的sqlSession
      * @return template
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Bean
     public SqlSessionTemplate sqlSessionTemplate() throws Exception {
@@ -103,7 +111,7 @@ public class MybatisConfig {
     /**
      * 必须为静态的
      *
-     * @return
+     * @return PropertySourcesPlaceholderConfigurer
      */
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {

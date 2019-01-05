@@ -2,7 +2,7 @@ package ${packageName}.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import ${packageName}.common.util.PageUtil;
+import ${packageName}common.util.PageUtil;
 import ${packageName}.common.page.PageBean;
 import ${packageName}.common.page.PageParam;
 import ${packageName}.entity.${entityName};
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Service("${entityName ? uncap_first}Service")
 public class ${entityName}ServiceImpl extends BaseServiceImpl<${entityName}> implements ${entityName}Service{
-    /** 采用这种方式注入，为了设置父类中的dao */
+    // 采用这种方式注入，为了设置父类中的dao
     private ${entityName}DAO ${entityName?uncap_first}DAO;
     @Autowired
     public void set${entityName}DAO(${entityName}DAO ${entityName?uncap_first}DAO) {
@@ -27,8 +27,8 @@ public class ${entityName}ServiceImpl extends BaseServiceImpl<${entityName}> imp
     }
 
     @Override
-    public PageBean<${entityName}> list${entityName}(PageParam pageParam) {
-        PageUtil.startPage(pageParam);
+    public PageBean<${entityName}> list${entityName}(PageParam PageParam) {
+        PageUtil.startPage(PageParam);
         List<${entityName}> list = ${entityName ? uncap_first}DAO.list${entityName}();
         return PageUtil.getPageBean(list);
     }

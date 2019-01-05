@@ -1,22 +1,14 @@
 package com.ale.common.exception;
 
-public class BusinessException extends RuntimeException implements ExceptionEnum {
+import lombok.Data;
 
-	private final Integer code;
-	private final String message;
+@Data
+public class BusinessException extends Exception {
 
-	public BusinessException(Integer code, String message) {
-		this.code = code;
-		this.message = message;
-	}
+    private ExceptionEnum exceptionEnum;
 
-	@Override
-	public Integer getCode() {
-		return code;
-	}
+    public BusinessException(ExceptionEnum exceptionEnum) {
+        this.exceptionEnum = exceptionEnum;
+    }
 
-	@Override
-	public String getMessage() {
-		return message;
-	}
 }

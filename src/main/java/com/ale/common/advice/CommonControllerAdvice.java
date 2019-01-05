@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.InitBinder;
 @ControllerAdvice
 public class CommonControllerAdvice {
 
-    /**
-     * 此方法用于处理请求信息和处理方法入参日期的转换
-     * @param binder binder
-     */
+    // 定义HTTP对应参数处理规则
     @InitBinder
+    //此方法用于处理请求信息和处理方法入参日期的转换
     public void initBinder(WebDataBinder binder) {
         binder.addCustomFormatter(new DateFormatter("yyyy-MM-dd"));
     }

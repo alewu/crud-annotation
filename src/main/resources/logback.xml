@@ -3,7 +3,7 @@
     <!-- 日志级别 -->
     <property name="log.root.level" value="INFO"/>
     <!-- 应用名称 -->
-    <property name="app.name" value="rbac"/>
+    <property name="app.name" value="crud"/>
     <!-- 定义日志文件 输入位置 （"../"表示在tomcat目录下logs）-->
     <property name="log.path" value="logs"/>
     <!-- 日志最大的历史 30天 -->

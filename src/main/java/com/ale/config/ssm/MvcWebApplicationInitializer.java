@@ -1,4 +1,4 @@
-package com.ale.config;
+package com.ale.config.ssm;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CharacterEncodingFilter;

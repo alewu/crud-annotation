@@ -9,7 +9,6 @@ import ${packageName}.common.page.PageParam;
 import ${packageName}.common.response.Response;
 import ${packageName}.service.${entityName}Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static ${packageName}.constants.RestURIConstants.*;
@@ -21,7 +20,6 @@ import static ${packageName}.constants.RestURIConstants.*;
  */
 @RestController
 @RequestMapping(APP_PREFIX)
-@Validated
 public class ${entityName}Controller {
     @Autowired
     private ${entityName}Service ${entityName?uncap_first}Service;
@@ -32,9 +30,9 @@ public class ${entityName}Controller {
      * @description 增加单个${entityName}
      */
     @PostMapping(${entityName?upper_case}S)
-    public Response save${entityName}(@Validated ${entityName} ${entityName?uncap_first}) {
-        ${entityName?uncap_first}Service.insert(${entityName?uncap_first});
-        return Response.ok().put("${entityName?uncap_first}Id", ${entityName?uncap_first}.get${entityName}Id());
+    public Response save${entityName}(${entityName} ${entityName?uncap_first}) {
+        ${entityName} t = ${entityName?uncap_first}Service.saveOne(${entityName?uncap_first});
+        return Response.ok().put("${entityName?uncap_first}Id", t.get${entityName}Id());
     }
     <#if !( customFields[2].columnName ? ends_with("_id") && customFields[3].columnName == "gmt_create" ) >
 
@@ -45,7 +43,7 @@ public class ${entityName}Controller {
      */
     @GetMapping(${entityName?upper_case}S + ${entityName?upper_case}_ID)
     public Response get${entityName}(@PathVariable String ${entityName?uncap_first}Id) {
-        ${entityName} ${entityName?uncap_first} = ${entityName?uncap_first}Service.get(${entityName?uncap_first}Id);
+        ${entityName} ${entityName?uncap_first} = ${entityName?uncap_first}Service.getOne(${entityName?uncap_first}Id);
         return Response.ok().put("${entityName?uncap_first}", ${entityName?uncap_first});
     }
 
@@ -66,8 +64,8 @@ public class ${entityName}Controller {
      * @description 更新单个${entityName}
     */
     @PutMapping(${entityName?upper_case}S)
-    public Response update${entityName}(@Validated ${entityName} ${entityName?uncap_first}) {
-        ${entityName?uncap_first}Service.update(${entityName?uncap_first});
+    public Response update${entityName}(${entityName} ${entityName?uncap_first}) {
+        ${entityName?uncap_first}Service.updateOne(${entityName?uncap_first});
         return Response.ok();
     }
 
@@ -78,7 +76,7 @@ public class ${entityName}Controller {
      */
     @DeleteMapping(${entityName?upper_case}S + ${entityName?upper_case}_ID)
     public Response remove${entityName}(@PathVariable String ${entityName?uncap_first}Id) {
-        ${entityName?uncap_first}Service.delete(${entityName?uncap_first}Id);
+        ${entityName?uncap_first}Service.removeOne(${entityName?uncap_first}Id);
         return Response.ok();
     }
     </#if>

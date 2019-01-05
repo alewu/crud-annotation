@@ -11,6 +11,6 @@ import ${packageName}.common.page.PageParam;
  */
 public interface ${entityName}Service extends BaseService<${entityName}> {
 
-    PageBean<${entityName}> list${entityName}(PageParam pageParam);
+    PageBean<${entityName}> list${entityName}(PageParam PageParam);
 
 }

@@ -11,9 +11,9 @@ import java.io.Serializable;
  */
 @Data
 public class PageParam implements Serializable {
-    /**页码*/
-    private Integer pageNum;
-    /**每页显示记录数*/
-    private Integer pageSize;
+    /*页码偏移量*/
+    private Integer offset;
+    /*每页显示的记录数*/
+    private Integer limit;
 
 }

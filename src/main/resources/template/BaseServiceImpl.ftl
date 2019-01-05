@@ -18,23 +18,24 @@ public class BaseServiceImpl<T> implements BaseService<T>{
     }
 
     @Override
-    public int insert(T t) {
-        return baseDAO.insert(t);
+    public T saveOne(T t) {
+        baseDAO.saveOne(t);
+        return t;
     }
 
     @Override
-    public int delete(String id) {
-        return baseDAO.delete(id);
+    public int removeOne(String id) {
+        return baseDAO.removeOne(id);
     }
 
     @Override
-    public int update(T t) {
-        return baseDAO.update(t);
+    public int updateOne(T t) {
+        return baseDAO.updateOne(t);
     }
 
     @Override
-    public T get(Object obj) {
-        return baseDAO.get(obj);
+    public T getOne(Object obj) {
+        return baseDAO.getOne(obj);
     }
 
 

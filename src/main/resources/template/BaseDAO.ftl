@@ -8,13 +8,13 @@ package ${packageName}.dao;
  */
 public interface BaseDAO<T> {
 
-    int insert(T t);
+    int saveOne(T t);
 
-    int delete(String id);
+    int removeOne(String id);
 
-    int update(T t);
+    int updateOne(T t);
 
-    T get(Object obj);
+    T getOne(Object obj);
 
 
 

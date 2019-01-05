@@ -30,12 +30,11 @@
     </#list>
 
     <#list customFields>
-    <insert id="insert" useGeneratedKeys="true" keyProperty="${customFields[0].memberVariable}" parameterType="${packageName}.entity.${entityName}">
+    <insert id="saveOne" useGeneratedKeys="true" keyProperty="${customFields[0].memberVariable}" parameterType="${packageName}.entity.${entityName}">
         INSERT INTO ${tableName}
         <trim prefix="(" suffix=")" suffixOverrides=",">
         <#items as customField>
-            <#if !customField.memberVariable ? contains("gmtCreate") && !customField.memberVariable ? contains("gmtModified")>
-        <#if customField.typeName ='VARCHAR' || customField.typeName ='CHAR'>
+        <#if customField.typeName ='VARCHAR' >
             <if test="${customField.memberVariable} != null and ${customField.memberVariable} !=''">
                 ${customField.columnName},
             </if>
@@ -44,15 +43,12 @@
                 ${customField.columnName},
             </if>
         </#if>
-            </#if>
         </#items>
-           gmt_create, gmt_modified
         </trim>
     </#list>
     <#list customFields>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
         <#items as customField>
-             <#if !customField.memberVariable ? contains("gmtCreate") && !customField.memberVariable ? contains("gmtModified")>
         <#if (customField.typeName ='VARCHAR') >
             <if test="${customField.memberVariable} != null and ${customField.memberVariable} !=''">
                 ${r'#{'}${customField.memberVariable}${r'}'},
@@ -62,24 +58,23 @@
                 ${r'#{'}${customField.memberVariable}${r'}'},
             </if>
         </#if>
-             </#if>
         </#items>
-            NOW(), NOW()
         </trim>
     </#list>
     </insert>
-    <delete id="delete" parameterType="java.lang.Integer">
+
+    <delete id="removeOne" parameterType="java.lang.Integer">
         DELETE FROM ${tableName}
         WHERE ${customFields[0].columnName} = ${r'#{'}${customFields[0].memberVariable}${r'}'}
     </delete>
+
 <#if !(customFields[3].columnName == "gmt_create" && customFields[2].columnName ? ends_with("_id")) >
 <#list customFields>
-    <update id="update" parameterType="${packageName}.entity.${entityName}">
+    <update id="updateOne" parameterType="${packageName}.entity.${entityName}">
         UPDATE ${tableName}
         <set>
     <#items as customField>
         <#if customField ? index != 0>
-            <#if !customField.memberVariable ? contains("gmtCreate") && !customField.memberVariable ? contains("gmtModified")>
         <#if (customField.typeName ='VARCHAR') >
             <if test="${customField.memberVariable} != null and ${customField.memberVariable} !=''">
                 ${customField.columnName} = ${r'#{'}${customField.memberVariable}${r'}'},
@@ -89,27 +84,26 @@
                 ${customField.columnName} = ${r'#{'}${customField.memberVariable}${r'}'},
             </if>
         </#if>
-            </#if>
         </#if>
     </#items>
-            gmt_modified = NOW()
         </set>
         WHERE ${customFields[0].columnName} = ${r'#{'}${customFields[0].memberVariable}${r'}'}
     </update>
 </#list>
-    <select id="get" resultMap="BaseResultMap">
+
+    <select id="getOne" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"/>
         FROM ${tableName}
         WHERE ${customFields[0].columnName} = ${r'#{'}${customFields[0].memberVariable}${r'}'}
     </select>
 
     <select id="list${entityName}" resultMap="BaseResultMap">
+        <bind name="pattern_keyword" value="'%' + keyword + '%'"/>
         SELECT <include refid="Base_Column_List"/>
         FROM ${tableName}
         <where>
-            <if test="keyword != null and keyword != ''">
-                <bind name="pattern_keyword" value="'%' + keyword + '%'"/>
-                columnName LIKE  ${r'#{'}pattern_keyword${r'}'}
+            <if test="keyword !=null and keyword != ''">
+                columnName LIKE  ${r'#{'}pattern_keyword${r'}'} OR columnName LIKE ${r'#{'}pattern_keyword${r'}'}
             </if>
         </where>
     </select>

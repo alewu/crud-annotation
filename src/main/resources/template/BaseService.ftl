@@ -7,13 +7,13 @@ package ${packageName}.service;
  */
 public interface BaseService<T> {
 
-    int insert(T t);
+    T saveOne(T t);
 
-    int delete(String id);
+    int removeOne(String id);
 
-    int update(T t);
+    int updateOne(T t);
 
-    T get(Object obj);
+    T getOne(Object obj);
 
 
 
