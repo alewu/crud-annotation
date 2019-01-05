@@ -21,7 +21,6 @@ public class PageBean<E> implements Serializable {
     private List<E> list;
 
     public PageBean() {
-
     }
 
     public PageBean(List<E> list) {
