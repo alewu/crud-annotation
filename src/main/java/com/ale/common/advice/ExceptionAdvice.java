@@ -36,7 +36,8 @@ public class ExceptionAdvice {
 
     /**
      * 验证参数
-     * @return
+     * @param e 异常
+     * @return ExceptionResponse
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
@@ -52,6 +53,8 @@ public class ExceptionAdvice {
 
     /**
      * BusinessException
+     * @param e 异常
+     * @return ExceptionResponse
      */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BusinessException.class)

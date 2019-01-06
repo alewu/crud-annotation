@@ -1,4 +1,4 @@
-package com.ale.config.ssm;
+package com.ale.config;
 
 
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
 /**
   * @author alewu

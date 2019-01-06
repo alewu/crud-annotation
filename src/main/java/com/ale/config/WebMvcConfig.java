@@ -1,4 +1,4 @@
-package com.ale.config.ssm;
+package com.ale.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;

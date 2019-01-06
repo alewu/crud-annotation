@@ -17,7 +17,7 @@ public class FreeMarkerTemplateUtils {
     /**
      * 通过Freemarker的Configuration读取相应的ftl
      **/
-    private static final Configuration CONFIGURATION = new Configuration(Configuration.VERSION_2_3_28);
+    private static final Configuration CONFIGURATION = new Configuration(Configuration.VERSION_2_3_26);
 
     static {
         CONFIGURATION.setClassForTemplateLoading(FreeMarkerTemplateUtils.class, "/template");

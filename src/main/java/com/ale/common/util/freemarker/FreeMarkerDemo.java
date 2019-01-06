@@ -1,10 +1,7 @@
-package com.ale.util.freemarker;
+package com.ale.common.util.freemarker;
 
 
 import com.ale.util.freemarker.bean.MVCEnum;
-import com.ale.util.freemarker.bean.SuffixConstants;
-import com.ale.util.freemarker.bean.TableMetaData;
-import com.ale.util.freemarker.util.FreeMarkerTemplateUtils;
 import com.ale.util.freemarker.util.TableUtils;
 import freemarker.template.Template;
 

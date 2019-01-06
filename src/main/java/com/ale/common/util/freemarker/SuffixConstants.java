@@ -1,4 +1,4 @@
-package com.ale.util.freemarker.bean;
+package com.ale.common.util.freemarker;
 
 public class SuffixConstants {
     public static final String JAVA = ".java";
