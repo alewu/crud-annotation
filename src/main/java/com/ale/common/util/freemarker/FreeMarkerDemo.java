@@ -1,8 +1,7 @@
 package com.ale.common.util.freemarker;
 
 
-import com.ale.util.freemarker.bean.MVCEnum;
-import com.ale.util.freemarker.util.TableUtils;
+import com.ale.common.util.mine.TableUtils;
 import freemarker.template.Template;
 
 import java.io.IOException;
@@ -24,15 +23,15 @@ public class FreeMarkerDemo {
     private static final String PACKAGE_NAME = getBasePackagePath(FreeMarkerDemo.class);
     private static final String FILE_PATH = getAbsolutePackagePath(FreeMarkerDemo.class);
 
-    private static final String CONSTANTS = MVCEnum.CONSTANTS.getName();
+    private static final String CONSTANTS = MvcEnum.CONSTANTS.getName();
 
     // 模板名称
-    private static final String ENTITY = MVCEnum.ENTITY.getName();
-    private static final String CONTROLLER = MVCEnum.CONTROLLER.getName();
-    private static final String SERVICE = MVCEnum.SERVICE.getName();
-    private static final String SERVICE_IMPL = MVCEnum.SERVICE_IMPL.getName();
-    private static final String DAO = MVCEnum.DAO.getName();
-    private static final String MAPPER = MVCEnum.MAPPER.getName();
+    private static final String ENTITY = MvcEnum.ENTITY.getName();
+    private static final String CONTROLLER = MvcEnum.CONTROLLER.getName();
+    private static final String SERVICE = MvcEnum.SERVICE.getName();
+    private static final String SERVICE_IMPL = MvcEnum.SERVICE_IMPL.getName();
+    private static final String DAO = MvcEnum.DAO.getName();
+    private static final String MAPPER = MvcEnum.MAPPER.getName();
     // 文件后缀
     private static final String JAVA_SUFFIX = SuffixConstants.JAVA;
     private static final String TEMPLATE_SUFFIX = SuffixConstants.FREEMARKER;
@@ -59,7 +58,7 @@ public class FreeMarkerDemo {
         // 获取结果集
         resultSet = TableUtils.getResultSet();
         // 创建包
-        for (MVCEnum mvcEnum : MVCEnum.values()) {
+        for (MvcEnum mvcEnum : MvcEnum.values()) {
             Path path = Paths.get(FILE_PATH, mvcEnum.getName());
             Files.createDirectory(path);
         }
@@ -68,9 +67,9 @@ public class FreeMarkerDemo {
 
     public static String getAbsolutePackagePath(Class clazz) {
         String pathStr = clazz.getResource("").getPath()
-                .replaceFirst("/", "")
-                .replace("target/classes", "src/main/java")
-                .replace("/util/freemarker", "");
+                              .replaceFirst("/", "")
+                              .replace("target/classes", "src/main/java")
+                              .replace("/util/freemarker", "");
         return pathStr;
     }
 
@@ -120,7 +119,7 @@ public class FreeMarkerDemo {
     private void generateEntityFile(TableMetaData tableMetaData) throws Exception {
         // 路径，包名，文件名
         Path path = Paths.get(FILE_PATH, ENTITY,
-                tableMetaData.getEntityName() + JAVA_SUFFIX);
+                              tableMetaData.getEntityName() + JAVA_SUFFIX);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("tableMetaData", tableMetaData);
         generateFileByTemplate(ENTITY, path, dataMap);
@@ -128,7 +127,7 @@ public class FreeMarkerDemo {
 
     private void generateControllerFile(TableMetaData tableMetaData) throws Exception {
         Path path = Paths.get(FILE_PATH, CONTROLLER,
-                tableMetaData.getEntityName() + MVCEnum.CONTROLLER.toUpperFirstChar() + JAVA_SUFFIX);
+                              tableMetaData.getEntityName() + MvcEnum.CONTROLLER.toUpperFirstChar() + JAVA_SUFFIX);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("tableMetaData", tableMetaData);
         generateFileByTemplate(CONTROLLER, path, dataMap);
@@ -136,7 +135,7 @@ public class FreeMarkerDemo {
 
     private void generateServiceImplFile(TableMetaData tableMetaData) throws Exception {
         Path path = Paths.get(FILE_PATH, "service", "impl",
-                tableMetaData.getEntityName() + "ServiceImpl" + JAVA_SUFFIX);
+                              tableMetaData.getEntityName() + "ServiceImpl" + JAVA_SUFFIX);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("entityName", tableMetaData.getEntityName());
         generateFileByTemplate("serviceImpl", path, dataMap);
@@ -144,7 +143,7 @@ public class FreeMarkerDemo {
 
     private void generateDaoFile(TableMetaData tableMetaData) throws Exception {
         Path path = Paths.get(FILE_PATH, DAO,
-                tableMetaData.getEntityName() + DAO.toUpperCase() + JAVA_SUFFIX);
+                              tableMetaData.getEntityName() + DAO.toUpperCase() + JAVA_SUFFIX);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("entityName", tableMetaData.getEntityName());
         generateFileByTemplate(DAO, path, dataMap);
@@ -153,7 +152,7 @@ public class FreeMarkerDemo {
 
     private void generateServiceFile(TableMetaData tableMetaData) throws Exception {
         Path path = Paths.get(FILE_PATH, SERVICE.toLowerCase(),
-                tableMetaData.getEntityName() + MVCEnum.SERVICE.toUpperFirstChar() + JAVA_SUFFIX);
+                              tableMetaData.getEntityName() + MvcEnum.SERVICE.toUpperFirstChar() + JAVA_SUFFIX);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("entityName", tableMetaData.getEntityName());
         generateFileByTemplate(SERVICE, path, dataMap);
@@ -162,7 +161,7 @@ public class FreeMarkerDemo {
 
     private void generateMapperFile(TableMetaData tableMetaData) throws Exception {
         Path path = Paths.get(FILE_PATH, MAPPER,
-                tableMetaData.getEntityName() + MVCEnum.MAPPER.toUpperFirstChar() + MAPPER_SUFFIX);
+                              tableMetaData.getEntityName() + MvcEnum.MAPPER.toUpperFirstChar() + MAPPER_SUFFIX);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("tableMetaData", tableMetaData);
         generateFileByTemplate(MAPPER, path, dataMap);
